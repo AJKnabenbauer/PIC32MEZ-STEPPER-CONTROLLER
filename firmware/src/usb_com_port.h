@@ -16,9 +16,14 @@
 #include "definitions.h"
 
 
-//#ifdef	__cplusplus
-//extern "C" {
-//#endif
+#define APP_READ_BUFFER_SIZE                                512
+
+// Data provided to transmit and receive buffers must be in coherent memory and aligned at a 16 byte boundary. 
+#define SUSB_ALIGNED __attribute__((coherent, aligned(16)))
+
+// A pointer to data that is in coherent memory and aligned at a 16 byte boundary 
+typedef SUSB_ALIGNED uint8_t* USB_DATA_PTR;
+
 
 
 /* Data structure returned during read complete and 
@@ -154,15 +159,6 @@ private:
             uintptr_t context );
 
 };
-
-
-
-
-
-//
-//#ifdef	__cplusplus
-//}
-//#endif
 
 #endif	/* TEST_H */
 

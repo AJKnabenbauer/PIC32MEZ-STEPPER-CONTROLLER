@@ -109,11 +109,11 @@ bool UART6_TxString( const char * format, ... );
 
 USB_CDC USB1;
 
-uint8_t __attribute__((coherent, aligned(16))) readBuffer[512] = { 0 };
+uint8_t SUSB_ALIGNED readBuffer[512] = { 0 };
 uint32_t readBufferBytes = 0;
 bool readComplete = true;
 
-uint8_t __attribute__((coherent, aligned(16))) writeBuffer[512] = { 0 };
+uint8_t SUSB_ALIGNED writeBuffer[512] = { 0 };
 uint32_t writeBufferBytes = 0;
 bool writeComplete = true;
 

@@ -201,8 +201,8 @@
       </logicalFolder>
       <itemPath>../src/app.c</itemPath>
       <itemPath>../src/main.cpp</itemPath>
-      <itemPath>../../../../../../HarmonyProjects/MyProject_4/firmware/src/usb_com_port.cpp</itemPath>
-      <itemPath>../../../../../../HarmonyProjects/MyProject_4/firmware/src/usb_com_port.h</itemPath>
+      <itemPath>../src/usb_com_port.cpp</itemPath>
+      <itemPath>../src/usb_com_port.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

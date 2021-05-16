@@ -1,6 +1,5 @@
-build/default/production/_ext/473541868/usb_com_port.o: \
- ../../../../../../HarmonyProjects/MyProject_4/firmware/src/usb_com_port.cpp \
- ../../../../../../HarmonyProjects/MyProject_4/firmware/src/usb_com_port.h \
+build/default/production/_ext/1360937237/usb_com_port.o: \
+ ../src/usb_com_port.cpp ../src/usb_com_port.h \
  ../src/config/default/configuration.h ../src/config/default/user.h \
  ../src/config/default/toolchain_specifics.h \
  ../src/config/default/definitions.h \
@@ -61,7 +60,7 @@ build/default/production/_ext/473541868/usb_com_port.o: \
  ../src/config/default/osal/osal_impl_basic.h \
  ../src/config/default/system/debug/sys_debug.h ../src/app.h
 
-../../../../../../HarmonyProjects/MyProject_4/firmware/src/usb_com_port.h:
+../src/usb_com_port.h:
 
 ../src/config/default/configuration.h:
 
