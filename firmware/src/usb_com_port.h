@@ -15,14 +15,15 @@
 #include "configuration.h"
 #include "definitions.h"
 
+#include <string>
 
-#define APP_READ_BUFFER_SIZE                                512
+#define USB_BUFFER_SIZE_ 512
 
 // Data provided to transmit and receive buffers must be in coherent memory and aligned at a 16 byte boundary. 
-#define SUSB_ALIGNED __attribute__((coherent, aligned(16)))
+#define USB_ALIGNED __attribute__((coherent, aligned(16)))
 
 // A pointer to data that is in coherent memory and aligned at a 16 byte boundary 
-typedef SUSB_ALIGNED uint8_t* USB_DATA_PTR;
+typedef USB_ALIGNED uint8_t* USB_DATA_PTR;
 
 
 
@@ -63,13 +64,14 @@ private:
 
         bool _isConfigured = false;
 
-        XFR_CALLBACK rxCallback = NULL;
-        void* rxUserData = NULL;
+        XFR_CALLBACK _rxCallback = NULL;
+        void* _rxUserData = NULL;
 
-        XFR_CALLBACK txCallback = NULL;
-        void* txUserData = NULL;
+        XFR_CALLBACK _txCallback = NULL;
+        void* _txUserData = NULL;
 
-
+        ENUM _lastErrorEnum = ERROR_OK;
+        const char* _lastErrorString = "NO ERROR";
 
 public:
 
@@ -145,6 +147,18 @@ public:
          */
         ENUM scheduleWrite( XFR_HANDLE* handle, void* data, size_t size );
 
+        ENUM setLastError( ENUM errorEnum, const char* errorString = "" );
+
+        ENUM getLastError_enum( );
+
+        const char* getLastError_c_string( );
+
+        std::string getLastError_string( );
+
+        static const char* enum_c_string( ENUM enumerator );
+
+        static std::string enum_string( ENUM enumerator );
+        
 private:
 
         static USB_DEVICE_CDC_EVENT_RESPONSE _CDCEventHandler(

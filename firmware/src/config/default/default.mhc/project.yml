@@ -1,11 +1,11 @@
 files:
-- generatedChecksum: 3C13720844166A5D97CF4EAD9DDB9FE2
+- generatedChecksum: null
   logicalPath: ''
   name: app.c
   physicalPath: ..\..
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 3C13720844166A5D97CF4EAD9DDB9FE2
+  userChecksum: null
 - generatedChecksum: 2F6CC050E57B9E5BA8A6C6C9A2D8F09A
   logicalPath: config\default\bsp
   name: bsp.c
@@ -48,13 +48,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 15F626B46316E3438AF9855E48DADAAB
-- generatedChecksum: F81A00E640818EDFB9E79C9BD241AEF4
+- generatedChecksum: null
   logicalPath: ''
   name: main.c
   physicalPath: ..\..
   security: NON_SECURE
   type: SOURCE
-  userChecksum: F81A00E640818EDFB9E79C9BD241AEF4
+  userChecksum: null
 - generatedChecksum: 70B79D478FDA433F1358A899C39955B1
   logicalPath: config\default\peripheral\clk
   name: plib_clk.c
@@ -167,13 +167,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 7806B30ECAE0D18D08CD583D8775530D
-- generatedChecksum: 452F7AB915EEA4B1529959D0FF80C3F7
+- generatedChecksum: null
   logicalPath: ''
   name: app.h
   physicalPath: ..\..
   security: NON_SECURE
   type: HEADER
-  userChecksum: 452F7AB915EEA4B1529959D0FF80C3F7
+  userChecksum: null
 - generatedChecksum: 1CC4A4F2A70990A31F79E1541BB62BE6
   logicalPath: config\default\bsp
   name: bsp.h
@@ -181,20 +181,20 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 1CC4A4F2A70990A31F79E1541BB62BE6
-- generatedChecksum: 6A7701433B97C992F558822076411F38
+- generatedChecksum: ED176703DFC50F487160E16C54320C98
   logicalPath: config\default
   name: configuration.h
   physicalPath: ''
   security: NON_SECURE
   type: HEADER
-  userChecksum: 6A7701433B97C992F558822076411F38
-- generatedChecksum: 74C9831001106DE255901998E211ABC8
+  userChecksum: ED176703DFC50F487160E16C54320C98
+- generatedChecksum: 3EC2DE68AA8979C60F4D55E3628417B9
   logicalPath: config\default
   name: definitions.h
   physicalPath: ''
   security: NON_SECURE
   type: HEADER
-  userChecksum: 74C9831001106DE255901998E211ABC8
+  userChecksum: 3EC2DE68AA8979C60F4D55E3628417B9
 - generatedChecksum: E189C26B2269F8DE46033CCD0621958D
   logicalPath: config\default
   name: device.h
@@ -692,13 +692,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: A0803FFCE7DA932883C0B89AD48FA04C
-- generatedChecksum: 4B3C3EF8A318908A22B78500515C3288
+- generatedChecksum: null
   logicalPath: config\default
   name: user.h
   physicalPath: ''
   security: NON_SECURE
   type: HEADER
-  userChecksum: 4B3C3EF8A318908A22B78500515C3288
+  userChecksum: null
 - generatedChecksum: 9175BBED360A1F5665567266A2A2A4FA
   logicalPath: config\default
   name: p32MZ2048EFM144.ld

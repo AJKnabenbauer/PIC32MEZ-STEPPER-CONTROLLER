@@ -32,6 +32,11 @@ build/default/production/_ext/1171490990/usb_device_init_data.o: \
  ../src/config/default/peripheral/ocmp/plib_ocmp3.h \
  ../src/config/default/peripheral/uart/plib_uart6.h \
  ../src/config/default/peripheral/uart/plib_uart_common.h \
+ ../src/config/default/usb/usb_device_cdc.h \
+ ../src/config/default/usb/usb_device.h \
+ ../src/config/default/usb/src/usb_device_function_driver.h \
+ ../src/config/default/usb/usb_cdc.h ../src/config/default/usb/usb_cdc.h \
+ ../src/config/default/peripheral/coretimer/plib_coretimer.h \
  ../src/config/default/driver/usb/usbhs/drv_usbhs.h \
  ../src/config/default/usb/usb_hub.h \
  ../src/config/default/driver/usb/usbhs/src/plib_usbhs.h \
@@ -48,11 +53,6 @@ build/default/production/_ext/1171490990/usb_device_init_data.o: \
  ../src/config/default/driver/usb/usbhs/src/../src/templates/usbhs_TxEPStatus_Default.h \
  ../src/config/default/driver/usb/usbhs/src/../src/templates/usbhs_RxEPStatus_Default.h \
  ../src/config/default/driver/usb/usbhs/src/../src/templates/usbhs_EndpointOperations_Default.h \
- ../src/config/default/usb/usb_device_cdc.h \
- ../src/config/default/usb/usb_device.h \
- ../src/config/default/usb/src/usb_device_function_driver.h \
- ../src/config/default/usb/usb_cdc.h ../src/config/default/usb/usb_cdc.h \
- ../src/config/default/peripheral/coretimer/plib_coretimer.h \
  ../src/config/default/peripheral/tmr/plib_tmr2.h \
  ../src/config/default/peripheral/tmr/plib_tmr_common.h \
  ../src/config/default/system/int/sys_int.h \
@@ -127,6 +127,18 @@ build/default/production/_ext/1171490990/usb_device_init_data.o: \
 
 ../src/config/default/peripheral/uart/plib_uart_common.h:
 
+../src/config/default/usb/usb_device_cdc.h:
+
+../src/config/default/usb/usb_device.h:
+
+../src/config/default/usb/src/usb_device_function_driver.h:
+
+../src/config/default/usb/usb_cdc.h:
+
+../src/config/default/usb/usb_cdc.h:
+
+../src/config/default/peripheral/coretimer/plib_coretimer.h:
+
 ../src/config/default/driver/usb/usbhs/drv_usbhs.h:
 
 ../src/config/default/usb/usb_hub.h:
@@ -158,18 +170,6 @@ build/default/production/_ext/1171490990/usb_device_init_data.o: \
 ../src/config/default/driver/usb/usbhs/src/../src/templates/usbhs_RxEPStatus_Default.h:
 
 ../src/config/default/driver/usb/usbhs/src/../src/templates/usbhs_EndpointOperations_Default.h:
-
-../src/config/default/usb/usb_device_cdc.h:
-
-../src/config/default/usb/usb_device.h:
-
-../src/config/default/usb/src/usb_device_function_driver.h:
-
-../src/config/default/usb/usb_cdc.h:
-
-../src/config/default/usb/usb_cdc.h:
-
-../src/config/default/peripheral/coretimer/plib_coretimer.h:
 
 ../src/config/default/peripheral/tmr/plib_tmr2.h:
 

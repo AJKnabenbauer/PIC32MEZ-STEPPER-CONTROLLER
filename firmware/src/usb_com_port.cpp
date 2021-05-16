@@ -13,16 +13,16 @@ USB_CDC::USB_CDC( )
 
 void USB_CDC::readCallbackRegister( XFR_CALLBACK ptr, void* userData )
 {
-        rxCallback = ptr;
-        rxUserData = userData;
+        _rxCallback = ptr;
+        _rxUserData = userData;
 }
 
 
 
 void USB_CDC::writeCallbackRegister( XFR_CALLBACK ptr, void* userData )
 {
-        txCallback = ptr;
-        txUserData = userData;
+        _txCallback = ptr;
+        _txUserData = userData;
 }
 
 
@@ -46,6 +46,8 @@ bool USB_CDC::openDevice( void )
                 return true;
         }
 
+        setLastError( ERROR_UNKNOWN, "Unable to open USB device" );
+
         return false;
 }
 
@@ -61,12 +63,16 @@ bool USB_CDC::startup( uint32_t timeout, bool doTasks )
         {
                 if (doTasks)
                 {
-                      SYS_Tasks( );  
+                        SYS_Tasks( );
                 }
-                
+
                 notReady = (openDevice( ) == false || _isConfigured == false) ? true : false;
 
-                if ((CORETIMER_CounterGet( ) - timeStart) >= timeout) return false;
+                if ((CORETIMER_CounterGet( ) - timeStart) >= timeout)
+                {
+                        setLastError( ERROR_UNKNOWN, "Timeout reached during USB_CDC startup" );
+                        return false;
+                }
         }
 
         return true;
@@ -86,7 +92,7 @@ USB_CDC::ENUM USB_CDC::scheduleRead( XFR_HANDLE* handle, void* data, size_t size
                 data,
                 size );
 
-        return result;
+        return setLastError( result );
 }
 
 
@@ -104,7 +110,81 @@ USB_CDC::ENUM USB_CDC::scheduleWrite( XFR_HANDLE* handle, void* data, size_t siz
                 size,
                 USB_DEVICE_CDC_TRANSFER_FLAGS_DATA_COMPLETE );
 
-        return result;
+        return setLastError( result );
+}
+
+
+
+USB_CDC::ENUM USB_CDC::setLastError( ENUM errorEnum, const char* errorString )
+{
+        _lastErrorEnum = errorEnum;
+        _lastErrorString = errorString;
+        return errorEnum;
+}
+
+
+
+USB_CDC::ENUM USB_CDC::getLastError_enum( )
+{
+        return _lastErrorEnum;
+}
+
+
+
+const char* USB_CDC::getLastError_c_string( )
+{
+        return _lastErrorString;
+}
+
+
+
+std::string USB_CDC::getLastError_string( )
+{
+        return std::string( _lastErrorString );
+}
+
+
+
+const char* USB_CDC::enum_c_string( ENUM enumerator )
+{
+        /*
+         * Note that we are intentionally using a switch statement instead of something 
+         * with better performance such as an array or map. This is done because some
+         * of the values are based off of error enums from the other USB drivers so the
+         * values are not sequential and may not be consistent if things change. The other 
+         * reason is because this function is only intended to be used rarely when you 
+         * need to log an error.
+         */
+        switch (enumerator)
+        {
+                case ERROR_OK:
+                        return "ERROR_OK";
+                case ERROR_TRANSFER_SIZE_INVALID:
+                        return "ERROR_TRANSFER_SIZE_INVALID";
+                case ERROR_RANSFER_QUEUE_FULL:
+                        return "ERROR_RANSFER_QUEUE_FULL";
+                case ERROR_INSTANCE_INVALID:
+                        return "ERROR_INSTANCE_INVALID";
+                case ERROR_INSTANCE_NOT_CONFIGURED:
+                        return "ERROR_INSTANCE_NOT_CONFIGURED";
+                case ERROR_PARAMETER_INVALID:
+                        return "ERROR_PARAMETER_INVALID";
+                case ERROR_ENDPOINT_HALTED:
+                        return "ERROR_ENDPOINT_HALTED";
+                case ERROR_TERMINATED_BY_HOST:
+                        return "ERROR_TERMINATED_BY_HOST";
+                case ERROR_UNKNOWN:
+                        return "ERROR_UNKNOWN";
+                default:
+                        return "UNKNOW ENUM";
+        }
+}
+
+
+
+std::string USB_CDC::enum_string( ENUM enumerator )
+{
+        return std::string( enum_c_string( enumerator ) );
 }
 
 
@@ -203,18 +283,18 @@ USB_DEVICE_CDC_EVENT_RESPONSE USB_CDC::_CDCEventHandler(
 
                 case USB_DEVICE_CDC_EVENT_WRITE_COMPLETE:
 
-                        if (usbContext->txCallback != NULL)
+                        if (usbContext->_txCallback != NULL)
                         {
-                                usbContext->txCallback( (XFR_EVENT_DATA*) pData, usbContext->txUserData );
+                                usbContext->_txCallback( (XFR_EVENT_DATA*) pData, usbContext->_txUserData );
                         }
 
                         break;
 
                 case USB_DEVICE_CDC_EVENT_READ_COMPLETE:
 
-                        if (usbContext->rxCallback != NULL)
+                        if (usbContext->_rxCallback != NULL)
                         {
-                                usbContext->rxCallback( (XFR_EVENT_DATA*) pData, usbContext->rxUserData );
+                                usbContext->_rxCallback( (XFR_EVENT_DATA*) pData, usbContext->_rxUserData );
                         }
 
                         break;

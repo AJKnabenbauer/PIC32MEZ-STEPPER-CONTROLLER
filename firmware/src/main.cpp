@@ -35,9 +35,12 @@
 #include <stdarg.h>                     // For va lists
 #include <stdio.h>
 
-#include <stdbool.h>
+//#include <stdbool.h>
 
-//#include <string>
+#include "string_helper.h"
+
+
+#include <string>
 
 #include "usb_com_port.h"
 
@@ -101,7 +104,9 @@ void UART6_RxCallback( uintptr_t context );
 
 void UART6_TxCallback( uintptr_t context );
 
-bool UART6_TxString( const char * format, ... );
+bool uart_tx_string( const std::string& str );
+
+bool uart_tx_string_v( const char * format, ... );
 
 
 
@@ -109,11 +114,11 @@ bool UART6_TxString( const char * format, ... );
 
 USB_CDC USB1;
 
-uint8_t SUSB_ALIGNED readBuffer[512] = { 0 };
+uint8_t USB_ALIGNED readBuffer[1024] = { 0 };
 uint32_t readBufferBytes = 0;
 bool readComplete = true;
 
-uint8_t SUSB_ALIGNED writeBuffer[512] = { 0 };
+uint8_t USB_ALIGNED writeBuffer[1024] = { 0 };
 uint32_t writeBufferBytes = 0;
 bool writeComplete = true;
 
@@ -157,7 +162,7 @@ int main( void )
 
         USB1.readCallbackRegister( USB_RxCallback, NULL );
         USB1.writeCallbackRegister( USB_TxCallback, NULL );
-        USB1.startup( UINT32_MAX - 10000 );
+        usbError = !(USB1.startup( UINT32_MAX - 10000 ));
 
 
         XFR_HANDLE handle = USB_DEVICE_CDC_TRANSFER_HANDLE_INVALID;
@@ -165,48 +170,25 @@ int main( void )
         USB_CDC::ENUM result;
 
         // Start reading on USB
-        readComplete = false;
-        result = USB1.scheduleRead( NULL, readBuffer, sizeof (readBuffer) );
-        usbError = (result != USB_CDC::ERROR_OK) ? true : false;
+        if (!usbError)
+        {
+                readComplete = false;
+                result = USB1.scheduleRead( NULL, readBuffer, sizeof (readBuffer) );
+                usbError = (result != USB_CDC::ERROR_OK) ? true : false;
+        }
 
         while (true)
         {
-
                 if (usbError)
                 {
                         LED_RED_On( );
 
-                        switch (result)
-                        {
-                                case USB_DEVICE_CDC_RESULT_OK: UART6_TxString( "Result: USB_DEVICE_CDC_RESULT_OK %u\r\n", result );
-                                        break;
-                                case USB_DEVICE_CDC_RESULT_ERROR_TRANSFER_SIZE_INVALID: UART6_TxString( "Result: USB_DEVICE_CDC_RESULT_ERROR_TRANSFER_SIZE_INVALID %u\r\n", result );
-                                        break;
-                                case USB_DEVICE_CDC_RESULT_ERROR_TRANSFER_QUEUE_FULL: UART6_TxString( "Result: USB_DEVICE_CDC_RESULT_ERROR_TRANSFER_QUEUE_FULL %u\r\n", result );
-                                        break;
-                                case USB_DEVICE_CDC_RESULT_ERROR_INSTANCE_INVALID: UART6_TxString( "Result: USB_DEVICE_CDC_RESULT_ERROR_INSTANCE_INVALID %u\r\n", result );
-                                        break;
-                                case USB_DEVICE_CDC_RESULT_ERROR_INSTANCE_NOT_CONFIGURED: UART6_TxString( "Result: USB_DEVICE_CDC_RESULT_ERROR_INSTANCE_NOT_CONFIGURED %u\r\n", result );
-                                        break;
-                                case USB_DEVICE_CDC_RESULT_ERROR_PARAMETER_INVALID: UART6_TxString( "Result: USB_DEVICE_CDC_RESULT_ERROR_PARAMETER_INVALID %u\r\n", result );
-                                        break;
-                                case USB_DEVICE_CDC_RESULT_ERROR_ENDPOINT_HALTED: UART6_TxString( "Result: USB_DEVICE_CDC_RESULT_ERROR_ENDPOINT_HALTED %u\r\n", result );
-                                        break;
-                                case USB_DEVICE_CDC_RESULT_ERROR_TERMINATED_BY_HOST: UART6_TxString( "Result: USB_DEVICE_CDC_RESULT_ERROR_TERMINATED_BY_HOST %u\r\n", result );
-                                        break;
-                                case USB_DEVICE_CDC_RESULT_ERROR: UART6_TxString( "Result: USB_DEVICE_CDC_RESULT_ERROR %u\r\n", result );
-                                        break;
-                                default: UART6_TxString( "Result: UNKNOWN %u\r\n", result );
-                                        break;
-                        }
+                        uart_tx_string(
+                                "Last Error: " + std::string( USB_CDC::enum_c_string( USB1.getLastError_enum( ) ) ) + "\r\n"
+                                "Last Error String: " + std::string( USB1.getLastError_c_string( ) ) + "\r\n"
+                                "\r\n"
+                                );
                 }
-
-
-
-
-
-
-
 
                 if (!usbError)
                 {
@@ -233,18 +215,18 @@ int main( void )
                 }
 
 
-                if (SW1_Get( ) != SW1_StateOld ||
-                        SW2_Get( ) != SW2_StateOld ||
-                        SW3_Get( ) != SW3_StateOld ||
-                        GPIO_RC15_Get( ) != SW4_StateOld
-                        )
+                if (SW1_Get( ) != SW1_StateOld || SW2_Get( ) != SW2_StateOld || 
+                        SW3_Get( ) != SW3_StateOld || GPIO_RC15_Get( ) != SW4_StateOld )
                 {
                         SW1_StateOld = SW1_Get( );
                         SW2_StateOld = SW2_Get( );
                         SW3_StateOld = SW3_Get( );
                         SW4_StateOld = GPIO_RC15_Get( );
 
-                        //UART6_TxString( testString.c_str( ) );
+                        uart_tx_string(
+                                "Last Error: " + USB_CDC::enum_string( USB1.getLastError_enum( ) )  + "\r\n"
+                                "Last Error String: " + USB1.getLastError_string( )  + "\r\n"
+                                "\r\n" );
 
                         int irp_status = -5;
 
@@ -337,7 +319,15 @@ void UART6_TxCallback( uintptr_t context )
 
 
 
-bool UART6_TxString( const char * format, ... )
+bool uart_tx_string( const std::string& str )
+{
+        UART6_Write( (void*) str.c_str( ), str.length( ) );
+        return true;
+}
+
+
+
+bool uart_tx_string_v( const char * format, ... )
 {
         static char buffer[512] = { 0 };
         int numChars = 0;
@@ -375,7 +365,6 @@ void USB_RxCallback( XFR_EVENT_DATA* pData, void* userData )
 
         readComplete = true;
         readBufferBytes = pData->length;
-
 }
 
 
@@ -385,7 +374,6 @@ void USB_TxCallback( XFR_EVENT_DATA* pData, void* userData )
 
         writeComplete = true;
         writeBufferBytes = 0;
-
 }
 
 
