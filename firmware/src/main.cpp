@@ -162,7 +162,7 @@ int main( void )
 
         USB1.readCallbackRegister( USB_RxCallback, NULL );
         USB1.writeCallbackRegister( USB_TxCallback, NULL );
-        usbError = !(USB1.startup( UINT32_MAX - 10000 ));
+        usbError = !(USB1.startup( 1000000 ));
 
 
         XFR_HANDLE handle = USB_DEVICE_CDC_TRANSFER_HANDLE_INVALID;
@@ -183,11 +183,11 @@ int main( void )
                 {
                         LED_RED_On( );
 
-                        uart_tx_string(
-                                "Last Error: " + std::string( USB_CDC::enum_c_string( USB1.getLastError_enum( ) ) ) + "\r\n"
-                                "Last Error String: " + std::string( USB1.getLastError_c_string( ) ) + "\r\n"
-                                "\r\n"
-                                );
+//                        uart_tx_string(
+//                                "Last Error: " + std::string( USB_CDC::enum_c_string( USB1.getLastError_enum( ) ) ) + "\r\n"
+//                                "Last Error String: " + std::string( USB1.getLastError_c_string( ) ) + "\r\n"
+//                                "\r\n"
+//                                );
                 }
 
                 if (!usbError)
