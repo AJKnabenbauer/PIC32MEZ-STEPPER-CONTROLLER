@@ -55,6 +55,7 @@ void EVIC_Initialize( void )
     INTCONSET = _INTCON_MVEC_MASK;
 
     /* Set up priority and subpriority of enabled interrupts */
+    IPC3SET = 0x40000 | 0x0;  /* TIMER_3:  Priority 1 / Subpriority 0 */
     IPC33SET = 0x4 | 0x0;  /* USB:  Priority 1 / Subpriority 0 */
     IPC33SET = 0x400 | 0x0;  /* USB_DMA:  Priority 1 / Subpriority 0 */
     IPC47SET = 0x4 | 0x0;  /* UART6_FAULT:  Priority 1 / Subpriority 0 */

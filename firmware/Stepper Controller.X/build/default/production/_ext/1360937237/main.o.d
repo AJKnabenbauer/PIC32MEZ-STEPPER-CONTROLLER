@@ -26,6 +26,7 @@ build/default/production/_ext/1360937237/main.o: ../src/main.cpp \
  ../src/config/default/usb/usb_host_hub_interface.h \
  ../src/config/default/usb/src/usb_device_mapping.h \
  ../src/config/default/bsp/bsp.h \
+ ../src/config/default/peripheral/ocmp/plib_ocmp4.h \
  ../src/config/default/peripheral/ocmp/plib_ocmp5.h \
  ../src/config/default/peripheral/ocmp/plib_ocmp3.h \
  ../src/config/default/peripheral/uart/plib_uart6.h \
@@ -53,13 +54,15 @@ build/default/production/_ext/1360937237/main.o: ../src/main.cpp \
  ../src/config/default/driver/usb/usbhs/src/../src/templates/usbhs_EndpointOperations_Default.h \
  ../src/config/default/peripheral/tmr/plib_tmr2.h \
  ../src/config/default/peripheral/tmr/plib_tmr_common.h \
+ ../src/config/default/peripheral/tmr/plib_tmr3.h \
  ../src/config/default/system/int/sys_int.h \
  ../src/config/default/osal/osal.h \
  ../src/config/default/osal/osal_definitions.h \
  ../src/config/default/osal/osal_impl_basic.h \
  ../src/config/default/system/debug/sys_debug.h ../src/app.h \
  ../src/string_helper.h ../src/usb_com_port.h \
- ../src/config/default/driver/usb/usbhs/drv_usbhs.h
+ ../src/config/default/driver/usb/usbhs/drv_usbhs.h \
+ ../src/pulse_handler.h
 
 ../src/config/default/definitions.h:
 
@@ -117,6 +120,8 @@ build/default/production/_ext/1360937237/main.o: ../src/main.cpp \
 
 ../src/config/default/bsp/bsp.h:
 
+../src/config/default/peripheral/ocmp/plib_ocmp4.h:
+
 ../src/config/default/peripheral/ocmp/plib_ocmp5.h:
 
 ../src/config/default/peripheral/ocmp/plib_ocmp3.h:
@@ -173,6 +178,8 @@ build/default/production/_ext/1360937237/main.o: ../src/main.cpp \
 
 ../src/config/default/peripheral/tmr/plib_tmr_common.h:
 
+../src/config/default/peripheral/tmr/plib_tmr3.h:
+
 ../src/config/default/system/int/sys_int.h:
 
 ../src/config/default/osal/osal.h:
@@ -190,3 +197,5 @@ build/default/production/_ext/1360937237/main.o: ../src/main.cpp \
 ../src/usb_com_port.h:
 
 ../src/config/default/driver/usb/usbhs/drv_usbhs.h:
+
+../src/pulse_handler.h:

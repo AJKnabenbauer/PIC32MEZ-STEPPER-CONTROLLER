@@ -75,10 +75,12 @@
               <itemPath>../src/config/default/peripheral/ocmp/plib_ocmp8.h</itemPath>
               <itemPath>../src/config/default/peripheral/ocmp/plib_ocmp5.h</itemPath>
               <itemPath>../src/config/default/peripheral/ocmp/plib_ocmp3.h</itemPath>
+              <itemPath>../src/config/default/peripheral/ocmp/plib_ocmp4.h</itemPath>
             </logicalFolder>
             <logicalFolder name="f7" displayName="tmr" projectFiles="true">
               <itemPath>../src/config/default/peripheral/tmr/plib_tmr_common.h</itemPath>
               <itemPath>../src/config/default/peripheral/tmr/plib_tmr2.h</itemPath>
+              <itemPath>../src/config/default/peripheral/tmr/plib_tmr3.h</itemPath>
             </logicalFolder>
             <logicalFolder name="f5" displayName="uart" projectFiles="true">
               <itemPath>../src/config/default/peripheral/uart/plib_uart_common.h</itemPath>
@@ -169,9 +171,11 @@
               <itemPath>../src/config/default/peripheral/ocmp/plib_ocmp8.c</itemPath>
               <itemPath>../src/config/default/peripheral/ocmp/plib_ocmp5.c</itemPath>
               <itemPath>../src/config/default/peripheral/ocmp/plib_ocmp3.c</itemPath>
+              <itemPath>../src/config/default/peripheral/ocmp/plib_ocmp4.c</itemPath>
             </logicalFolder>
             <logicalFolder name="f7" displayName="tmr" projectFiles="true">
               <itemPath>../src/config/default/peripheral/tmr/plib_tmr2.c</itemPath>
+              <itemPath>../src/config/default/peripheral/tmr/plib_tmr3.c</itemPath>
             </logicalFolder>
             <logicalFolder name="f5" displayName="uart" projectFiles="true">
               <itemPath>../src/config/default/peripheral/uart/plib_uart6.c</itemPath>
@@ -205,6 +209,7 @@
       <itemPath>../src/usb_com_port.h</itemPath>
       <itemPath>../src/string_helper.h</itemPath>
       <itemPath>../src/string_helper.cpp</itemPath>
+      <itemPath>../src/pulse_handler.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -218,12 +223,13 @@
         <itemPath>../src/config/default/default.mhc/GraphSettings.yml</itemPath>
         <itemPath>../src/config/default/default.mhc/HarmonyCore.yml</itemPath>
         <itemPath>../src/config/default/default.mhc/ocmp3.yml</itemPath>
+        <itemPath>../src/config/default/default.mhc/ocmp4.yml</itemPath>
         <itemPath>../src/config/default/default.mhc/ocmp5.yml</itemPath>
         <itemPath>../src/config/default/default.mhc/ocmp8.yml</itemPath>
         <itemPath>../src/config/default/default.mhc/project.yml</itemPath>
         <itemPath>../src/config/default/default.mhc/settings.yml</itemPath>
         <itemPath>../src/config/default/default.mhc/tmr2.yml</itemPath>
-        <itemPath>../src/config/default/default.mhc/tmr5.yml</itemPath>
+        <itemPath>../src/config/default/default.mhc/tmr3.yml</itemPath>
         <itemPath>../src/config/default/default.mhc/uart6.yml</itemPath>
         <itemPath>../src/config/default/default.mhc/usb_device.yml</itemPath>
         <itemPath>../src/config/default/default.mhc/usb_device_cdc.yml</itemPath>
@@ -617,6 +623,8 @@
         <property key="memories.programmemory" value="true"/>
         <property key="memories.programmemory.ranges" value="1d000000-1d1fffff"/>
         <property key="memories.rww" value="true"/>
+        <property key="programmerToGoFilePath"
+                  value="C:/Users/Andrew/Documents/EE Projects/c&amp;c++ libraries/PIC32MEZ-STEPPER-CONTROLLER/firmware/Stepper Controller.X/debug/default/Stepper Controller_ptg"/>
         <property key="programoptions.donoteraseauxmem" value="false"/>
         <property key="programoptions.eraseb4program" value="true"/>
         <property key="programoptions.pgmentry.voltage" value="low"/>

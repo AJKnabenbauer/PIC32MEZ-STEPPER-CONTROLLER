@@ -46,6 +46,7 @@
 
 #include "driver/usb/usbhs/drv_usbhs.h"
 
+#include "pulse_handler.h"
 
 
 
@@ -139,6 +140,41 @@ void USB_TxCallback( XFR_EVENT_DATA* pData, void* userData );
 // *****************************************************************************
 
 
+uint32_t pulsesToDo = 0;
+
+uint16_t accelVal = 0;
+uint16_t speedCurrent = 10000;
+
+
+
+void TMR3_Callback( uint32_t status, uintptr_t context )
+{
+
+        if (pulsesToDo > 0)
+        {
+                pulsesToDo--;
+        }
+        
+        speedCurrent += accelVal;
+        
+        PH_TMR_PreiodSet(speedCurrent);
+        
+        //TMR3_PeriodSet(speedCurrent);
+
+        if (pulsesToDo == 0)
+        {
+                OCMP4_Disable( );
+                PH_TMR_Stop( );
+                TMR3 = 0;
+        } else
+        {
+                OCMP4_Enable( );
+        }
+
+        //OCMP4_Enable( );
+}
+
+
 
 int main( void )
 {
@@ -168,6 +204,15 @@ int main( void )
         usbError = !(USB1.startup( 100000000 ));
 
 
+        TMR3_CallbackRegister( TMR3_Callback, (uintptr_t) NULL );
+        PH_TMR_PreiodSet( 10000 );
+        //TMR3_Start( );
+
+        OCMP4_CompareValueSet( 1000 );
+        //OCMP4_CompareSecondaryValueSet( 1000 );
+        //OCMP4_Enable( );
+
+
         XFR_HANDLE handle = USB_DEVICE_CDC_TRANSFER_HANDLE_INVALID;
 
         USB_CDC::ENUM result;
@@ -186,11 +231,11 @@ int main( void )
                 {
                         LED_RED_On( );
 
-//                        uart_tx_string(
-//                                "Last Error: " + std::string( USB_CDC::enum_c_string( USB1.getLastError_enum( ) ) ) + "\r\n"
-//                                "Last Error String: " + std::string( USB1.getLastError_c_string( ) ) + "\r\n"
-//                                "\r\n"
-//                                );
+                        //                        uart_tx_string(
+                        //                                "Last Error: " + std::string( USB_CDC::enum_c_string( USB1.getLastError_enum( ) ) ) + "\r\n"
+                        //                                "Last Error String: " + std::string( USB1.getLastError_c_string( ) ) + "\r\n"
+                        //                                "\r\n"
+                        //                                );
                 }
 
                 if (!usbError)
@@ -218,25 +263,25 @@ int main( void )
                 }
 
 
-                if (SW1_Get( ) != SW1_StateOld || SW2_Get( ) != SW2_StateOld || 
-                        SW3_Get( ) != SW3_StateOld || GPIO_RC15_Get( ) != SW4_StateOld )
+                if (SW1_Get( ) != SW1_StateOld || SW2_Get( ) != SW2_StateOld ||
+                        SW3_Get( ) != SW3_StateOld || GPIO_RC15_Get( ) != SW4_StateOld)
                 {
                         SW1_StateOld = SW1_Get( );
                         SW2_StateOld = SW2_Get( );
                         SW3_StateOld = SW3_Get( );
                         SW4_StateOld = GPIO_RC15_Get( );
-                        
-                        SYS_STATUS statusUSB = USB_DEVICE_Status(sysObj.usbDevObject0);
-                        
+
+                        SYS_STATUS statusUSB = USB_DEVICE_Status( sysObj.usbDevObject0 );
+
                         //USB_DEVICE_OBJ 
                         //USB_DEVICE_STATE stateUSB = USB_DEVICE_StateGet()
                         //SYS_STATUS statusHSUSB = DRV_USBHS_Status(sysObj.drvUSBHSObject);
 
                         uart_tx_string(
-                                "Device State: " + _to_string(statusUSB) + "\r\n"
-                               // "High Speed Driver State: " + std::to_string(statusHSUSB) + "\r\n"
-                                "Last Error: " + USB_CDC::enum_string( USB1.getLastError_enum( ) )  + "\r\n"
-                                "Last Error String: " + USB1.getLastError_string( )  + "\r\n"
+                                "Device State: " + _to_string( statusUSB ) + "\r\n"
+                                // "High Speed Driver State: " + std::to_string(statusHSUSB) + "\r\n"
+                                "Last Error: " + USB_CDC::enum_string( USB1.getLastError_enum( ) ) + "\r\n"
+                                "Last Error String: " + USB1.getLastError_string( ) + "\r\n"
                                 "\r\n" );
 
                         int irp_status = -5;
@@ -373,9 +418,58 @@ bool uart_tx_string_v( const char * format, ... )
 
 void USB_RxCallback( XFR_EVENT_DATA* pData, void* userData )
 {
-
         readComplete = true;
         readBufferBytes = pData->length;
+
+        USB_DEVICE_IRP* irp = (USB_DEVICE_IRP*) pData->handle;
+        char* pBuffer = (char*) irp->data;
+
+        int bufferSize = sizeof (readBuffer);
+
+        // add null terminator to end of message
+        if (readBufferBytes < bufferSize)
+        {
+                pBuffer[readBufferBytes] = '\0';
+        } else
+        {
+                pBuffer[bufferSize - 1] = '\0';
+        }
+
+        switch (pBuffer[0])
+        {
+                case 'P':
+                        pulsesToDo += atoi( &pBuffer[1] );
+
+                        // start the counter to begin generating pulses again
+                        if (pulsesToDo > 0)
+                        {
+                                TMR3 = 0;
+                                TMR3_Start( );
+                                OCMP4_Enable( );
+                        }
+
+                        break;
+                        
+                case 'A':
+                        accelVal = atoi( &pBuffer[1] );
+                        break;
+        }
+
+//        if (pBuffer[0] = 'P')
+//        {
+//                int pulseCount = atoi( &pBuffer[1] );
+//
+//                pulsesToDo += atoi( &pBuffer[1] );
+//
+//                // start the counter to begin generating pulses again
+//                if (pulsesToDo > 0)
+//                {
+//                        TMR3 = 0;
+//
+//                        TMR3_Start( );
+//                        OCMP4_Enable( );
+//                }
+//        }
 }
 
 

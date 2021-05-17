@@ -65,6 +65,7 @@ void GPIO_Initialize ( void )
     /* PORTC Initialization */
 
     /* PORTD Initialization */
+    ANSELDCLR = 0x8000; /* Digital Mode Enable */
 
     /* PORTE Initialization */
 
@@ -98,6 +99,7 @@ void GPIO_Initialize ( void )
     RPB8R = 11;
     RPB7R = 12;
     RPB9R = 11;
+    RPD15R = 11;
 
     /* Lock back the system after PPS configuration */
     CFGCONbits.IOLOCK = 1;

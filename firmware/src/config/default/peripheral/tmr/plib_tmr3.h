@@ -1,27 +1,25 @@
 /*******************************************************************************
- System Tasks File
+  Data Type definition of Timer PLIB
+
+  Company:
+    Microchip Technology Inc.
 
   File Name:
-    tasks.c
+    plib_tmr3.h
 
   Summary:
-    This file contains source code necessary to maintain system's polled tasks.
+    Data Type definition of the Timer Peripheral Interface Plib.
 
   Description:
-    This file contains source code necessary to maintain system's polled tasks.
-    It implements the "SYS_Tasks" function that calls the individual "Tasks"
-    functions for all polled MPLAB Harmony modules in the system.
+    This file defines the Data Types for the Timer Plib.
 
   Remarks:
-    This file requires access to the systemObjects global data structure that
-    contains the object handles to all MPLAB Harmony module objects executing
-    polled in the system.  These handles are passed into the individual module
-    "Tasks" functions to identify the instance of the module to maintain.
- *******************************************************************************/
+    None.
 
-// DOM-IGNORE-BEGIN
+*******************************************************************************/
+
 /*******************************************************************************
-* Copyright (C) 2018 Microchip Technology Inc. and its subsidiaries.
+* Copyright (C) 2019 Microchip Technology Inc. and its subsidiaries.
 *
 * Subject to your compliance with these terms, you may use Microchip software
 * and any derivatives exclusively with Microchip products. It is your
@@ -41,61 +39,63 @@
 * FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS IN
 * ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
 * THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
- *******************************************************************************/
+*******************************************************************************/
+
+#ifndef PLIB_TMR3_H
+#define PLIB_TMR3_H
+
+#include <stddef.h>
+#include <stdint.h>
+#include "device.h"
+#include "plib_tmr_common.h"
+
+// DOM-IGNORE-BEGIN
+#ifdef __cplusplus  // Provide C++ Compatibility
+
+    extern "C" {
+
+#endif
 // DOM-IGNORE-END
 
 // *****************************************************************************
 // *****************************************************************************
-// Section: Included Files
+// Section: Data Types
 // *****************************************************************************
 // *****************************************************************************
 
-#include "configuration.h"
-#include "definitions.h"
-
-
-
-
 // *****************************************************************************
 // *****************************************************************************
-// Section: System "Tasks" Routine
+// Section: Interface Routines
 // *****************************************************************************
 // *****************************************************************************
 
-/*******************************************************************************
-  Function:
-    void SYS_Tasks ( void )
 
-  Remarks:
-    See prototype in system/common/sys_module.h.
-*/
-void SYS_Tasks ( void )
-{
-    /* Maintain system services */
-    
+// *****************************************************************************
+void TMR3_Initialize(void);
 
-    /* Maintain Device Drivers */
-    
+void TMR3_Start(void);
 
-    /* Maintain Middleware & Other Libraries */
-    	/* USB Device layer tasks routine */ 
-    USB_DEVICE_Tasks(sysObj.usbDevObject0);
+void TMR3_Stop(void);
 
-    /* USBHS Driver Task Routine */ 
-    DRV_USBHS_Tasks(sysObj.drvUSBHSObject);
+void TMR3_PeriodSet(uint16_t);
 
+uint16_t TMR3_PeriodGet(void);
 
+uint16_t TMR3_CounterGet(void);
 
-    /* Maintain the application's state machine. */
-        /* Call Application task APP. */
-    APP_Tasks();
+uint32_t TMR3_FrequencyGet(void);
 
+void TMR3_InterruptEnable(void);
 
+void TMR3_InterruptDisable(void);
 
+void TMR3_CallbackRegister( TMR_CALLBACK callback_fn, uintptr_t context );
 
-}
+// DOM-IGNORE-BEGIN
+#ifdef __cplusplus  // Provide C++ Compatibility
 
-/*******************************************************************************
- End of File
- */
+    }
+#endif
+// DOM-IGNORE-END
 
+#endif /* PLIB_TMR3_H */

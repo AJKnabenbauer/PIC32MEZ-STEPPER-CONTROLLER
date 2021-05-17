@@ -40,5 +40,12 @@ children:
         attributes: {id: tmr2, value: 'true'}
       - type: User
         attributes: {value: 'false'}
+  - type: Boolean
+    attributes: {id: TMR_SLAVE_INTERRUPT_MODE}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: tmr2, value: 'true'}
 - type: ElementPosition
-  attributes: {x: '30', y: '280', id: tmr2}
+  attributes: {x: '92', y: '507', id: tmr2}

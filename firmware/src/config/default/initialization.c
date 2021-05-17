@@ -216,6 +216,8 @@ void SYS_Initialize ( void* data )
     OCMP8_Initialize();
 
 	BSP_Initialize();
+    OCMP4_Initialize();
+
     OCMP5_Initialize();
 
     OCMP3_Initialize();
@@ -225,6 +227,8 @@ void SYS_Initialize ( void* data )
     CORETIMER_Initialize();
 
     TMR2_Initialize();
+
+    TMR3_Initialize();
 
 
 

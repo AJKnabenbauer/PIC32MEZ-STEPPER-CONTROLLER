@@ -97,4 +97,4 @@ children:
       - type: User
         attributes: {value: 'true'}
 - type: ElementPosition
-  attributes: {x: '190', y: '320', id: uart6}
+  attributes: {x: '480', y: '447', id: uart6}

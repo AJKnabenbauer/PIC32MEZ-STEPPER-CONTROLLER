@@ -27,6 +27,7 @@ build/default/production/_ext/1171490990/exceptions.o: \
  ../src/config/default/usb/usb_host_hub_interface.h \
  ../src/config/default/usb/src/usb_device_mapping.h \
  ../src/config/default/bsp/bsp.h \
+ ../src/config/default/peripheral/ocmp/plib_ocmp4.h \
  ../src/config/default/peripheral/ocmp/plib_ocmp5.h \
  ../src/config/default/peripheral/ocmp/plib_ocmp3.h \
  ../src/config/default/peripheral/uart/plib_uart6.h \
@@ -54,6 +55,7 @@ build/default/production/_ext/1171490990/exceptions.o: \
  ../src/config/default/driver/usb/usbhs/src/../src/templates/usbhs_EndpointOperations_Default.h \
  ../src/config/default/peripheral/tmr/plib_tmr2.h \
  ../src/config/default/peripheral/tmr/plib_tmr_common.h \
+ ../src/config/default/peripheral/tmr/plib_tmr3.h \
  ../src/config/default/system/int/sys_int.h \
  ../src/config/default/osal/osal.h \
  ../src/config/default/osal/osal_definitions.h \
@@ -120,6 +122,8 @@ build/default/production/_ext/1171490990/exceptions.o: \
 
 ../src/config/default/bsp/bsp.h:
 
+../src/config/default/peripheral/ocmp/plib_ocmp4.h:
+
 ../src/config/default/peripheral/ocmp/plib_ocmp5.h:
 
 ../src/config/default/peripheral/ocmp/plib_ocmp3.h:
@@ -175,6 +179,8 @@ build/default/production/_ext/1171490990/exceptions.o: \
 ../src/config/default/peripheral/tmr/plib_tmr2.h:
 
 ../src/config/default/peripheral/tmr/plib_tmr_common.h:
+
+../src/config/default/peripheral/tmr/plib_tmr3.h:
 
 ../src/config/default/system/int/sys_int.h:
 
