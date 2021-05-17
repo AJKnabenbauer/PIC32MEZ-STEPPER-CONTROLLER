@@ -44,6 +44,9 @@
 
 #include "usb_com_port.h"
 
+#include "driver/usb/usbhs/drv_usbhs.h"
+
+
 
 
 /***************************************************************************
@@ -162,7 +165,7 @@ int main( void )
 
         USB1.readCallbackRegister( USB_RxCallback, NULL );
         USB1.writeCallbackRegister( USB_TxCallback, NULL );
-        usbError = !(USB1.startup( 1000000 ));
+        usbError = !(USB1.startup( 100000000 ));
 
 
         XFR_HANDLE handle = USB_DEVICE_CDC_TRANSFER_HANDLE_INVALID;
@@ -222,8 +225,16 @@ int main( void )
                         SW2_StateOld = SW2_Get( );
                         SW3_StateOld = SW3_Get( );
                         SW4_StateOld = GPIO_RC15_Get( );
+                        
+                        SYS_STATUS statusUSB = USB_DEVICE_Status(sysObj.usbDevObject0);
+                        
+                        //USB_DEVICE_OBJ 
+                        //USB_DEVICE_STATE stateUSB = USB_DEVICE_StateGet()
+                        //SYS_STATUS statusHSUSB = DRV_USBHS_Status(sysObj.drvUSBHSObject);
 
                         uart_tx_string(
+                                "Device State: " + _to_string(statusUSB) + "\r\n"
+                               // "High Speed Driver State: " + std::to_string(statusHSUSB) + "\r\n"
                                 "Last Error: " + USB_CDC::enum_string( USB1.getLastError_enum( ) )  + "\r\n"
                                 "Last Error String: " + USB1.getLastError_string( )  + "\r\n"
                                 "\r\n" );

@@ -1,0 +1,1 @@
+ $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -ffunction-sections -I"../src" -I"../src/config/default" -I"../src/packs/PIC32MZ2048EFM144_DFP" -Wall   -DXPRJ_default=$(CND_CONF)  $(COMPARISON_BUILD)  -mdfp="${DFP_DIR}"  C:\Users\Andrew\Documents\EE Projects\c&c++ libraries\PIC32MEZ-STEPPER-CONTROLLER\firmware\src\config\default\peripheral\ocmp\plib_ocmp5.c

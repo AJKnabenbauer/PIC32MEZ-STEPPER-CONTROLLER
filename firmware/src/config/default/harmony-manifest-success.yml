@@ -4,7 +4,7 @@
 
 
 project: PIC32MEZ-STEPPER-CONTROLLER
-creation_date: 2021-05-16T16:36:22.176-05:00[America/Chicago]    # ISO 8601 format: https://www.w3.org/TR/NOTE-datetime
+creation_date: 2021-05-16T18:51:49.962-05:00[America/Chicago]    # ISO 8601 format: https://www.w3.org/TR/NOTE-datetime
 operating_system: Windows 10
 mhc_mode: IDE            # [IDE|Standalone|Headless]
 mhc_version: v3.7.1
@@ -14,8 +14,8 @@ compiler: XC32 (3.00)
 
 modules:
     - {name: "csp", version: "v3.9.0"}
-    - {name: "core", version: "v3.8.1"}
+    - {name: "core", version: "v3.9.0"}
     - {name: "dev_packs", version: "v3.8.0"}
-    - {name: "usb", version: "v3.7.0"}
+    - {name: "usb", version: "v3.7.1"}
     - {name: "bsp", version: "v3.8.2"}
 

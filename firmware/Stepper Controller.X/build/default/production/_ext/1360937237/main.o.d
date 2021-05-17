@@ -58,7 +58,8 @@ build/default/production/_ext/1360937237/main.o: ../src/main.cpp \
  ../src/config/default/osal/osal_definitions.h \
  ../src/config/default/osal/osal_impl_basic.h \
  ../src/config/default/system/debug/sys_debug.h ../src/app.h \
- ../src/string_helper.h ../src/usb_com_port.h
+ ../src/string_helper.h ../src/usb_com_port.h \
+ ../src/config/default/driver/usb/usbhs/drv_usbhs.h
 
 ../src/config/default/definitions.h:
 
@@ -187,3 +188,5 @@ build/default/production/_ext/1360937237/main.o: ../src/main.cpp \
 ../src/string_helper.h:
 
 ../src/usb_com_port.h:
+
+../src/config/default/driver/usb/usbhs/drv_usbhs.h:
