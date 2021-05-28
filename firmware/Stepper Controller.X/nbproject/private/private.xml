@@ -2,6 +2,14 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/Andrew/Documents/EE%20Projects/c&amp;c++%20libraries/PIC32MEZ-STEPPER-CONTROLLER/firmware/src/config/default/peripheral/tmr/plib_tmr_common.h</file>
+            <file>file:/C:/Users/Andrew/Documents/EE%20Projects/c&amp;c++%20libraries/PIC32MEZ-STEPPER-CONTROLLER/firmware/src/config/default/peripheral/ocmp/plib_ocmp4.c</file>
+            <file>file:/C:/Users/Andrew/Documents/EE%20Projects/c&amp;c++%20libraries/PIC32MEZ-STEPPER-CONTROLLER/firmware/src/usb_com_port.cpp</file>
+            <file>file:/C:/Users/Andrew/Documents/EE%20Projects/c&amp;c++%20libraries/PIC32MEZ-STEPPER-CONTROLLER/firmware/src/config/default/peripheral/tmr/plib_tmr3.c</file>
+            <file>file:/C:/Users/Andrew/Documents/EE%20Projects/c&amp;c++%20libraries/PIC32MEZ-STEPPER-CONTROLLER/firmware/Stepper%20Controller.X/nbproject/Makefile-impl.mk</file>
+            <file>file:/C:/Users/Andrew/Documents/EE%20Projects/c&amp;c++%20libraries/PIC32MEZ-STEPPER-CONTROLLER/firmware/src/usb_com_port.h</file>
+            <file>file:/C:/Users/Andrew/Documents/EE%20Projects/c&amp;c++%20libraries/PIC32MEZ-STEPPER-CONTROLLER/firmware/src/main.cpp</file>
+        </group>
     </open-files>
 </project-private>

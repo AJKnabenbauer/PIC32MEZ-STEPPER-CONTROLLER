@@ -118,13 +118,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: F3FE4C9619D83DBC994C79CF7BB834F8
-- generatedChecksum: 60B8684870813077F40D01115EE42681
+- generatedChecksum: 5AF9C42B7D8C0E386097410DB505D43F
   logicalPath: config\default\peripheral\tmr
   name: plib_tmr3.c
   physicalPath: peripheral\tmr
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 60B8684870813077F40D01115EE42681
+  userChecksum: 5AF9C42B7D8C0E386097410DB505D43F
 - generatedChecksum: CAFC7758EA067AFE68AB54623BBF1283
   logicalPath: config\default\peripheral\uart
   name: plib_uart6.c

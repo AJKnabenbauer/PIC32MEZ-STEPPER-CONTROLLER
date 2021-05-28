@@ -4,18 +4,18 @@
   Main Source File
 
   Company:
-    Microchip Technology Inc.
+	Microchip Technology Inc.
 
   File Name:
-    main.c
+	main.c
 
   Summary:
-    This file contains the "main" function for a project.
+	This file contains the "main" function for a project.
 
   Description:
-    This file contains the "main" function for a project.  The
-    "main" function calls the "SYS_Initialize" function to initialize the state
-    machines of all modules in the system
+	This file contains the "main" function for a project.  The
+	"main" function calls the "SYS_Initialize" function to initialize the state
+	machines of all modules in the system
  *******************************************************************************/
 
 // *****************************************************************************
@@ -126,7 +126,11 @@ uint8_t USB_ALIGNED writeBuffer[1024] = { 0 };
 uint32_t writeBufferBytes = 0;
 bool writeComplete = true;
 
+
+
 bool usbError = false;
+
+uint8_t USB_ALIGNED uartWriteBuffer[1024] = { 0 };
 
 void USB_RxCallback( XFR_EVENT_DATA* pData, void* userData );
 void USB_TxCallback( XFR_EVENT_DATA* pData, void* userData );
@@ -150,326 +154,496 @@ uint16_t speedCurrent = 10000;
 void TMR3_Callback( uint32_t status, uintptr_t context )
 {
 
-        if (pulsesToDo > 0)
-        {
-                pulsesToDo--;
-        }
-        
-        speedCurrent += accelVal;
-        
-        PH_TMR_PreiodSet(speedCurrent);
-        
-        //TMR3_PeriodSet(speedCurrent);
+	if (pulsesToDo > 0)
+	{
+		pulsesToDo--;
+	}
 
-        if (pulsesToDo == 0)
-        {
-                OCMP4_Disable( );
-                PH_TMR_Stop( );
-                TMR3 = 0;
-        } else
-        {
-                OCMP4_Enable( );
-        }
 
-        //OCMP4_Enable( );
+	//speedCurrent += accelVal;
+
+	//PH_TMR_PreiodSet( speedCurrent );
+
+	//TMR3_PeriodSet(speedCurrent);
+
+	if (pulsesToDo == 0)
+	{
+		//OCMP4_Disable( );
+		TMR3_Stop( );
+		TMR3 = 0;
+	}
+	//else
+	//        {
+	//                OCMP4_Enable( );
+	//        }
+
+	//OCMP4_Enable( );
 }
 
 
 
 int main( void )
 {
-        /* Initialize all modules */
-        SYS_Initialize( NULL );
+	/* Initialize all modules */
+	SYS_Initialize( NULL );
 
-        CORETIMER_Start( );
+	CORETIMER_Start( );
 
-        TMR2_PeriodSet( 10000 );
-        LED_RGB_setColor( 500, 500, 500 );
-        LED_RGB_enable( );
+	TMR2_PeriodSet( 10000 );
+	LED_RGB_setColor( 500, 500, 500 );
+	LED_RGB_enable( );
 
-        LED_GREEN_Off( );
-        LED_RED_Off( );
-        LED_YELLOW_Off( );
+	LED_GREEN_Off( );
+	LED_RED_Off( );
+	LED_YELLOW_Off( );
 
-        bool SW1_StateOld = SW1_Get( ), SW2_StateOld = SW2_Get( );
-        bool SW3_StateOld = SW3_Get( ), SW4_StateOld = GPIO_RC15_Get( );
+	bool SW1_StateOld = SW1_Get( ), SW2_StateOld = SW2_Get( );
+	bool SW3_StateOld = SW3_Get( ), SW4_StateOld = GPIO_RC15_Get( );
 
-        UART6_ReadCallbackRegister( UART6_RxCallback, (uintptr_t) NULL );
-        UART6_WriteCallbackRegister( UART6_TxCallback, (uintptr_t) NULL );
+	UART6_ReadCallbackRegister( UART6_RxCallback, (uintptr_t) NULL );
+	UART6_WriteCallbackRegister( UART6_TxCallback, (uintptr_t) NULL );
 
-        UART6_Read( &rxByte, 1 );
+	UART6_Read( &rxByte, 1 );
 
-        USB1.readCallbackRegister( USB_RxCallback, NULL );
-        USB1.writeCallbackRegister( USB_TxCallback, NULL );
-        usbError = !(USB1.startup( 100000000 ));
-
-
-        TMR3_CallbackRegister( TMR3_Callback, (uintptr_t) NULL );
-        PH_TMR_PreiodSet( 10000 );
-        //TMR3_Start( );
-
-        OCMP4_CompareValueSet( 1000 );
-        //OCMP4_CompareSecondaryValueSet( 1000 );
-        //OCMP4_Enable( );
+	USB1.readCallbackRegister( USB_RxCallback, NULL );
+	USB1.writeCallbackRegister( USB_TxCallback, NULL );
+	usbError = !(USB1.startup( 100000000 ));
 
 
-        XFR_HANDLE handle = USB_DEVICE_CDC_TRANSFER_HANDLE_INVALID;
+	TMR3_CallbackRegister( TMR3_Callback, (uintptr_t) NULL );
+	TMR3_PeriodSet( 10000 );
+	TMR3_Start( );
 
-        USB_CDC::ENUM result;
-
-        // Start reading on USB
-        if (!usbError)
-        {
-                readComplete = false;
-                result = USB1.scheduleRead( NULL, readBuffer, sizeof (readBuffer) );
-                usbError = (result != USB_CDC::ERROR_OK) ? true : false;
-        }
-
-        while (true)
-        {
-                if (usbError)
-                {
-                        LED_RED_On( );
-
-                        //                        uart_tx_string(
-                        //                                "Last Error: " + std::string( USB_CDC::enum_c_string( USB1.getLastError_enum( ) ) ) + "\r\n"
-                        //                                "Last Error String: " + std::string( USB1.getLastError_c_string( ) ) + "\r\n"
-                        //                                "\r\n"
-                        //                                );
-                }
-
-                if (!usbError)
-                {
-                        if (readComplete && writeComplete)
-                        {
-                                // copy the read data so we can echo back
-                                memcpy( writeBuffer, readBuffer, readBufferBytes );
-
-                                // initiate a write of the data
-                                writeBufferBytes = readBufferBytes;
-                                writeComplete = false;
-                                result = USB1.scheduleWrite( NULL, writeBuffer, readBufferBytes );
-                                usbError = (result != USB_CDC::ERROR_OK) ? true : false;
-
-                                // if the write was successful then we start another read
-                                if (!usbError)
-                                {
-                                        readBufferBytes = 0;
-                                        readComplete = false;
-                                        result = USB1.scheduleRead( NULL, readBuffer, sizeof (readBuffer) );
-                                        usbError = (result != USB_CDC::ERROR_OK) ? true : false;
-                                }
-                        }
-                }
+	OCMP4_CompareSecondaryValueSet( 1000 );
+	//OCMP4_CompareSecondaryValueSet( 1000 );
+	OCMP4_Enable( );
 
 
-                if (SW1_Get( ) != SW1_StateOld || SW2_Get( ) != SW2_StateOld ||
-                        SW3_Get( ) != SW3_StateOld || GPIO_RC15_Get( ) != SW4_StateOld)
-                {
-                        SW1_StateOld = SW1_Get( );
-                        SW2_StateOld = SW2_Get( );
-                        SW3_StateOld = SW3_Get( );
-                        SW4_StateOld = GPIO_RC15_Get( );
+	XFR_HANDLE handle = USB_DEVICE_CDC_TRANSFER_HANDLE_INVALID;
 
-                        SYS_STATUS statusUSB = USB_DEVICE_Status( sysObj.usbDevObject0 );
+	USB_CDC::ENUM result;
 
-                        //USB_DEVICE_OBJ 
-                        //USB_DEVICE_STATE stateUSB = USB_DEVICE_StateGet()
-                        //SYS_STATUS statusHSUSB = DRV_USBHS_Status(sysObj.drvUSBHSObject);
+	// Start reading on USB
+	if (!usbError)
+	{
+		readComplete = false;
+		result = USB1.scheduleRead( NULL, readBuffer, sizeof (readBuffer) );
+		usbError = (result != USB_CDC::ERROR_OK) ? true : false;
+	}
 
-                        uart_tx_string(
-                                "Device State: " + _to_string( statusUSB ) + "\r\n"
-                                // "High Speed Driver State: " + std::to_string(statusHSUSB) + "\r\n"
-                                "Last Error: " + USB_CDC::enum_string( USB1.getLastError_enum( ) ) + "\r\n"
-                                "Last Error String: " + USB1.getLastError_string( ) + "\r\n"
-                                "\r\n" );
 
-                        int irp_status = -5;
 
-                        if (handle != USB_DEVICE_CDC_TRANSFER_HANDLE_INVALID)
-                        {
-                                USB_DEVICE_IRP* irp = (USB_DEVICE_IRP*) handle;
-                                irp_status = irp->status;
+	while (true)
+	{
+		if (usbError)
+		{
+			LED_RED_On( );
 
-                        }
+			//                        uart_tx_string(
+			//                                "Last Error: " + std::string( USB_CDC::enum_c_string( USB1.getLastError_enum( ) ) ) + "\r\n"
+			//                                "Last Error String: " + std::string( USB1.getLastError_c_string( ) ) + "\r\n"
+			//                                "\r\n"
+			//                                );
+		}
 
-                }
+		static char cb[1024] = { 0 };
+		static uint cb_i = 0;
+		static bool newCommand = false;
 
-                readComplete ? LED_YELLOW_Off( ) : LED_YELLOW_On( );
-                writeComplete ? LED_GREEN_Off( ) : LED_GREEN_On( );
-                usbError ? LED_RED_On( ) : LED_RED_Off( );
+		if (!usbError)
+		{
 
-                /* Maintain state machines of all polled MPLAB Harmony modules. */
+			if (readComplete && !newCommand)
+			{
+				// copy to respective buffers so we can echo back 
+				memcpy( writeBuffer, readBuffer, readBufferBytes );
 
-                SYS_Tasks( );
+				// initiate a write of the data and echo back
+				writeComplete = false;
+				result = USB1.scheduleWrite( NULL, writeBuffer, readBufferBytes );
+				usbError = (result != USB_CDC::ERROR_OK) ? true : false;
 
-        }
+				// parse for end of command
+				if (!newCommand)
+				{
+					for (uint i = 0; i < readBufferBytes; i++)
+					{
+						if (cb_i >= (sizeof (cb) - 1))
+						{
+							cb[(sizeof (cb) - 1)] = '\0';
+							newCommand = true;
+							break;
+						}
 
-        /* Execution should not come here during normal operation */
+						// copy over char and look for end delimiter
+						cb[cb_i] = (char) readBuffer[i];
 
-        return ( EXIT_FAILURE);
+						if (cb[cb_i] == '\r' || cb[cb_i] == '\n' || cb[cb_i] == '\0')
+						{
+							cb[cb_i] == '\0';
+									newCommand = true;
+							break;
+						}
+
+						cb_i++;
+					}
+				}
+
+				// start another read
+				if (!usbError)
+				{
+					readBufferBytes = 0;
+					readComplete = false;
+					result = USB1.scheduleRead( NULL, readBuffer, sizeof (readBuffer) );
+					usbError = (result != USB_CDC::ERROR_OK) ? true : false;
+				}
+			}
+
+
+
+			if (newCommand)
+			{
+				LED_GREEN_Toggle( );
+
+				for (uint i = 0; i < cb_i; i++)
+				{
+					switch (cb[i])
+					{
+						case 's':
+						case 'S':
+
+							speedCurrent = uint16_t( atoi( &cb[i + 1] ) );
+							TMR3_PeriodSet( speedCurrent );
+
+							break;
+
+						case 'p':
+						case 'P':
+
+							pulsesToDo = uint32_t( atol( &cb[i + 1] ) );
+							TMR3 = 0;
+							TMR3_Start( );
+							OCMP4_Enable( );
+
+							break;
+
+						case 'o':
+						case 'O':
+
+							OCMP4_CompareSecondaryValueSet( uint16_t( atoi( &cb[i + 1] ) ) );
+
+							break;
+
+					}
+				}
+
+				cb_i = 0;
+				newCommand = false;
+
+				if (writeComplete)
+				{
+					int cnt = snprintf_s( (char*) writeBuffer, sizeof (writeBuffer), "New Command: %s\r\n", cb );
+
+					writeComplete = false;
+					result = USB1.scheduleWrite( NULL, writeBuffer, cnt );
+					usbError = (result != USB_CDC::ERROR_OK) ? true : false;
+				}
+
+			}
+
+
+
+
+
+
+
+
+
+
+
+			//				for (uint i = 0; i < readBufferBytes; i++)
+			//				{
+			//					// buffer command until we find end character or run out of room
+			//					if (cb_i < sizeof (cb))
+			//					{
+			//						cb[cb_i] = readBuffer[i];
+			//						cb_i++;
+			//
+			//						if (readBuffer[i] == '/r' || readBuffer[i] == '/n' || readBuffer[i] == '/0')
+			//						{
+			//							newCommand = true;
+			//						}
+			//					} else
+			//					{
+			//						newCommand = true;
+			//					}
+			//
+			//					if (newCommand == true)
+			//					{
+			//						break;
+			//					}
+			//				}
+			//
+			//
+			//				if (pBuffer[0] = 'P')
+			//				{
+			//					int pulseCount = atoi( &pBuffer[1] );
+			//
+			//					pulsesToDo += atoi( &pBuffer[1] );
+			//
+			//					// start the counter to begin generating pulses again
+			//					if (pulsesToDo > 0)
+			//					{
+			//						TMR3 = 0;
+			//						TMR3_Start( );
+			//						OCMP4_Enable( );
+			//					}
+			//				}
+		}
+
+
+
+
+
+		//		if (readComplete && writeComplete)
+		//		{
+		//			// copy the read data so we can echo back
+		//			memcpy( writeBuffer, readBuffer, readBufferBytes );
+		//			memcpy( uartWriteBuffer, readBuffer, readBufferBytes );
+		//
+		//
+		//			// initiate a write of the data and echo back
+		//			writeBufferBytes = readBufferBytes;
+		//			writeComplete = false;
+		//			result = USB1.scheduleWrite( NULL, writeBuffer, readBufferBytes );
+		//			usbError = (result != USB_CDC::ERROR_OK) ? true : false;
+		//
+		//			// echo to uart
+		//			UART6_Write( uartWriteBuffer, readBufferBytes );
+		//
+		//			// if the write was successful then we start another read
+		//			if (!usbError)
+		//			{
+		//				readBufferBytes = 0;
+		//				readComplete = false;
+		//				result = USB1.scheduleRead( NULL, readBuffer, sizeof (readBuffer) );
+		//				usbError = (result != USB_CDC::ERROR_OK) ? true : false;
+		//			}
+		//		} else if (writeComplete && pulsesToDo > 0)
+		//		{
+		//			int cnt = snprintf_s( (char*) writeBuffer, sizeof (writeBuffer),
+		//					"pulsesToDo = %u\r", pulsesToDo );
+		//
+		//			writeBufferBytes = cnt;
+		//			writeComplete = false;
+		//			result = USB1.scheduleWrite( NULL, writeBuffer, writeBufferBytes );
+		//			usbError = (result != USB_CDC::ERROR_OK) ? true : false;
+		//
+		//		}
+
+
+
+		//		if (SW1_Get( ) != SW1_StateOld || SW2_Get( ) != SW2_StateOld ||
+		//				SW3_Get( ) != SW3_StateOld || GPIO_RC15_Get( ) != SW4_StateOld)
+		//		{
+		//			SW1_StateOld = SW1_Get( );
+		//			SW2_StateOld = SW2_Get( );
+		//			SW3_StateOld = SW3_Get( );
+		//			SW4_StateOld = GPIO_RC15_Get( );
+		//
+		//			SYS_STATUS statusUSB = USB_DEVICE_Status( sysObj.usbDevObject0 );
+		//
+		//			//USB_DEVICE_OBJ 
+		//			//USB_DEVICE_STATE stateUSB = USB_DEVICE_StateGet()
+		//			//SYS_STATUS statusHSUSB = DRV_USBHS_Status(sysObj.drvUSBHSObject);
+		//
+		//			LED_GREEN_Toggle( );
+		//
+		//			uart_tx_string( "button pressed\n\r" );
+		//
+		//			int irp_status = -5;
+		//
+		//			if (handle != USB_DEVICE_CDC_TRANSFER_HANDLE_INVALID)
+		//			{
+		//				USB_DEVICE_IRP* irp = (USB_DEVICE_IRP*) handle;
+		//				irp_status = irp->status;
+		//
+		//			}
+		//
+		//		}
+
+		//readComplete ? LED_YELLOW_Off( ) : LED_YELLOW_On( );
+		//writeComplete ? LED_GREEN_Off( ) : LED_GREEN_On( );
+		usbError ? LED_RED_On( ) : LED_RED_Off( );
+
+		/* Maintain state machines of all polled MPLAB Harmony modules. */
+
+		SYS_Tasks( );
+
+	}
+
+	/* Execution should not come here during normal operation */
+
+	return ( EXIT_FAILURE);
 }
 
 
 
 void LED_RGB_setColor( uint16_t red, uint16_t green, uint16_t blue )
 {
-        // TMR2 is the timer that drives our PWM period
-        uint16_t period = TMR2_PeriodGet( );
+	// TMR2 is the timer that drives our PWM period
+	uint16_t period = TMR2_PeriodGet( );
 
-        // We have to subtract our color value from the max
-        // value since the LED is active low.
-        LED_RGB_RED_VAL_SET( period - red );
-        LED_RGB_GREEN_VAL_SET( period - green );
-        LED_RGB_BLUE_VAL_SET( period - blue );
+	// We have to subtract our color value from the max
+	// value since the LED is active low.
+	LED_RGB_RED_VAL_SET( period - red );
+	LED_RGB_GREEN_VAL_SET( period - green );
+	LED_RGB_BLUE_VAL_SET( period - blue );
 }
 
 
 
 void LED_RGB_enable( void )
 {
-        TMR2_Start( );
-        LED_RGB_RED_ENABLE( );
-        LED_RGB_GREEN_ENABLE( );
-        LED_RGB_BLUE_ENABLE( );
+	TMR2_Start( );
+	LED_RGB_RED_ENABLE( );
+	LED_RGB_GREEN_ENABLE( );
+	LED_RGB_BLUE_ENABLE( );
 }
 
 
 
 void LED_RGB_disable( void )
 {
-        TMR2_Stop( );
-        LED_RGB_RED_DISABLE( );
-        LED_RGB_GREEN_DISABLE( );
-        LED_RGB_BLUE_DISABLE( );
+	TMR2_Stop( );
+	LED_RGB_RED_DISABLE( );
+	LED_RGB_GREEN_DISABLE( );
+	LED_RGB_BLUE_DISABLE( );
 }
 
 
 
 void UART6_RxCallback( uintptr_t context )
 {
-        UART6_Error = UART6_ErrorGet( );
+	UART6_Error = UART6_ErrorGet( );
 
-        if (UART6_Error == UART_ERROR_NONE)
-        {
-                //LED_RED_On();
-        } else
-        {
-                UART6_Read( &rxByte, 1 );
-        }
+	if (UART6_Error == UART_ERROR_NONE)
+	{
+		//LED_RED_On();
+	} else
+	{
+		UART6_Read( &rxByte, 1 );
+	}
 }
 
 
 
 void UART6_TxCallback( uintptr_t context )
 {
-        UART6_Error = UART6_ErrorGet( );
+	UART6_Error = UART6_ErrorGet( );
 
-        if (UART6_Error != UART_ERROR_NONE)
-        {
-                //LED_RED_On();
-        }
+	if (UART6_Error != UART_ERROR_NONE)
+	{
+		//LED_RED_On();
+	}
 
-        LED_YELLOW_Off( );
+	LED_GREEN_Toggle( );
 }
 
 
 
 bool uart_tx_string( const std::string& str )
 {
-        UART6_Write( (void*) str.c_str( ), str.length( ) );
-        return true;
+	UART6_Write( (void*) str.c_str( ), str.length( ) );
+	return true;
 }
 
 
 
 bool uart_tx_string_v( const char * format, ... )
 {
-        static char buffer[512] = { 0 };
-        int numChars = 0;
-        int sizeData = 0;
+	static char buffer[512] = { 0 };
+	int numChars = 0;
+	int sizeData = 0;
 
-        if (UART6_WriteIsBusy( ) || UART6_Error != UART_ERROR_NONE)
-        {
-                return false;
-        }
+	if (UART6_WriteIsBusy( ) || UART6_Error != UART_ERROR_NONE)
+	{
+		return false;
+	}
 
-        va_list args;
-        va_start( args, format );
-        numChars = vsnprintf( buffer, sizeof (buffer), format, args );
-        va_end( args );
+	va_list args;
+	va_start( args, format );
+	numChars = vsnprintf( buffer, sizeof (buffer), format, args );
+	va_end( args );
 
-        if (numChars <= 0)
-        {
-                return false;
-        }
+	if (numChars <= 0)
+	{
+		return false;
+	}
 
-        // check if string size is within our buffer or not and change 
-        // the count of bytes to be sent
-        sizeData = numChars < sizeof (buffer) ? numChars : sizeof (buffer) - 1;
+	// check if string size is within our buffer or not and change 
+	// the count of bytes to be sent
+	sizeData = numChars < sizeof (buffer) ? numChars : sizeof (buffer) - 1;
 
-        UART6_Write( buffer, sizeData );
-        LED_YELLOW_On( );
+	UART6_Write( buffer, sizeData );
+	LED_YELLOW_On( );
 
-        return true;
+	return true;
 }
 
 
 
 void USB_RxCallback( XFR_EVENT_DATA* pData, void* userData )
 {
-        readComplete = true;
-        readBufferBytes = pData->length;
+	readComplete = true;
+	readBufferBytes = pData->length;
 
-        USB_DEVICE_IRP* irp = (USB_DEVICE_IRP*) pData->handle;
-        char* pBuffer = (char*) irp->data;
+	USB_DEVICE_IRP* irp = (USB_DEVICE_IRP*) pData->handle;
+	char* pBuffer = (char*) irp->data;
 
-        int bufferSize = sizeof (readBuffer);
+	//int bufferSize = sizeof (readBuffer);
 
-        // add null terminator to end of message
-        if (readBufferBytes < bufferSize)
-        {
-                pBuffer[readBufferBytes] = '\0';
-        } else
-        {
-                pBuffer[bufferSize - 1] = '\0';
-        }
+	// add null terminator to end of message
+	if (readBufferBytes < sizeof (readBuffer))
+	{
+		pBuffer[readBufferBytes] = '\0';
+	} else
+	{
+		pBuffer[sizeof (readBuffer) - 1] = '\0';
+	}
 
-        switch (pBuffer[0])
-        {
-                case 'P':
-                        pulsesToDo += atoi( &pBuffer[1] );
+	//        switch (pBuffer[0])
+	//        {
+	//                case 'P':
+	//                        pulsesToDo += atoi( &pBuffer[1] );
+	//
+	//                        // start the counter to begin generating pulses again
+	//                        if (pulsesToDo > 0)
+	//                        {
+	//                                TMR3 = 0;
+	//                                TMR3_Start( );
+	//                                OCMP4_Enable( );
+	//                        }
+	//
+	//                        break;
+	//
+	//                case 'A':
+	//                        accelVal = atoi( &pBuffer[1] );
+	//                        break;
+	//        }
 
-                        // start the counter to begin generating pulses again
-                        if (pulsesToDo > 0)
-                        {
-                                TMR3 = 0;
-                                TMR3_Start( );
-                                OCMP4_Enable( );
-                        }
+	//        if (pBuffer[0] = 'P')
+	//        {
+	//                int pulseCount = atoi( &pBuffer[1] );
+	//
+	//                pulsesToDo += atoi( &pBuffer[1] );
+	//
+	//                // start the counter to begin generating pulses again
+	//                if (pulsesToDo > 0)
+	//                {
 
-                        break;
-                        
-                case 'A':
-                        accelVal = atoi( &pBuffer[1] );
-                        break;
-        }
-
-//        if (pBuffer[0] = 'P')
-//        {
-//                int pulseCount = atoi( &pBuffer[1] );
-//
-//                pulsesToDo += atoi( &pBuffer[1] );
-//
-//                // start the counter to begin generating pulses again
-//                if (pulsesToDo > 0)
-//                {
-//                        TMR3 = 0;
-//
-//                        TMR3_Start( );
-//                        OCMP4_Enable( );
-//                }
-//        }
+	//                }
+	//        }
 }
 
 
@@ -477,8 +651,8 @@ void USB_RxCallback( XFR_EVENT_DATA* pData, void* userData )
 void USB_TxCallback( XFR_EVENT_DATA* pData, void* userData )
 {
 
-        writeComplete = true;
-        writeBufferBytes = 0;
+	writeComplete = true;
+	writeBufferBytes = 0;
 }
 
 
